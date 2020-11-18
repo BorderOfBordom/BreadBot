@@ -1,8 +1,10 @@
-import discord,os,random,asyncio,random,requests,json
+import discord,os,random,asyncio,random,requests,json,aiohttp,io
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import get
 from bs4 import BeautifulSoup
+from webserver import keep_alive
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -19,6 +21,8 @@ usr_agent = {
     'Connection': 'keep-alive',
 }
 
+counter = 0
+
 SAVE_FOLDER = 'images'
 
 client = commands.Bot(command_prefix = '%')
@@ -34,39 +38,60 @@ async def on_member_join(ctx, member):
         to_send = 'Welcome {0.mention} to {1.name}!'.format(member, guild)
         await guild.system_channel.send(to_send)
 
-#Gives a random decimal
+#REEEEEE
+@client.command(pass_context=True)
+async def R(ctx):
+    await ctx.send('EEE')
+
+#Gives a random number between 1 and 100
 @client.command(pass_context=True)
 async def ranNum(ctx):
-    a = random.random()
+    a = (int) ((random.random()*100)+1)
     await ctx.send(a)
 
 #Gives a pic of bread
 @client.command(pass_context=True)
 async def bread(ctx):
-    if not os.path.exists(SAVE_FOLDER):
-        os.mkdir(SAVE_FOLDER)
+    global counter
 
     searchurl = GOOGLE_IMAGE + 'q=bread'
 
-    response = requests.get(searchurl,headers=usr_agent)
-    html = response.text
+    # request url, without usr_agent, the permission gets denied
+    response = requests.get(searchurl, headers=usr_agent)
 
-    soup = BeautifulSoup(html,'html.parser')
-    results = soup.findAll('div', {'class':'rg_i'}, limit=1)
+    # find all divs where class='rg_meta'
+    soup = BeautifulSoup(response.text, 'html.parser')
+    results = soup.findAll('img', {'class': 'rg_i Q4LuWd'})
 
-    imagelinks = []
-    for result in results:
-        text = result.text
-        text_dict= json.loads(text)
-        link = text_dict['ou']
-        imagelinks.append(link)
+    # gathering requested number of list of image links with data-src attribute
+    # continue the loop in case query fails for non-data-src attributes
+    count = 0
+    links = []
+    for res in results:
+        try:
+            link = res['data-src']
+            links.append(link)
+            count += 1
+            if (count >= 100): break
 
-    for imagelink in enumerate(imagelinks):
-        response = requests.get(imagelink)
+        except KeyError:
+            continue
 
-    await ctx.send(file=discord.File(response))
+    counter += 1
+    if(counter >= 100): counter = 0
+
+    link = links[counter]
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(link) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, 'bread.png'))
+    
+    
 
 
-
+keep_alive()
 
 client.run(TOKEN)
