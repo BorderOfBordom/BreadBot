@@ -89,7 +89,45 @@ async def bread(ctx):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'bread.png'))
     
-    
+#Search up any picture
+@client.command(pass_context=True)
+async def pic(ctx, s):
+    global counter
+
+    searchurl = GOOGLE_IMAGE + 'q=' + s
+
+    # request url, without usr_agent, the permission gets denied
+    response = requests.get(searchurl, headers=usr_agent)
+
+    # find all divs where class='rg_meta'
+    soup = BeautifulSoup(response.text, 'html.parser')
+    results = soup.findAll('img', {'class': 'rg_i Q4LuWd'})
+
+    # gathering requested number of list of image links with data-src attribute
+    # continue the loop in case query fails for non-data-src attributes
+    count = 0
+    links = []
+    for res in results:
+        try:
+            link = res['data-src']
+            links.append(link)
+            count += 1
+            if (count >= 100): break
+
+        except KeyError:
+            continue
+
+    counter += 1
+    if(counter >= 100): counter = 0
+
+    link = links[counter]
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(link) as resp:
+            if resp.status != 200:
+                return await ctx.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            await ctx.send(file=discord.File(data, ""+s+'.png'))  
 
 
 keep_alive()
