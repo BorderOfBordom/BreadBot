@@ -89,9 +89,9 @@ async def bread(ctx):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, 'bread.png'))
     
-#Search up any picture, if there is a number given, gives the specific pic
+#Search up any picture
 @client.command(pass_context=True)
-async def pic(ctx, s, n=None):
+async def pic(ctx, s):
     global counter
 
     searchurl = GOOGLE_IMAGE + 'q=' + s
@@ -112,20 +112,15 @@ async def pic(ctx, s, n=None):
             link = res['data-src']
             links.append(link)
             count += 1
-            if n is not None:
-                if (count >= n): break
-            else:
-                if(count >= 100): break
+            if(count >= 100): break
 
         except KeyError:
             continue
 
     counter += 1
     if(counter >= 100): counter = 0
-    if n is not None:
-        link = links[n]
-    else:
-        link = links[counter]
+    
+    link = links[counter]
 
     async with aiohttp.ClientSession() as session:
         async with session.get(link) as resp:
@@ -134,7 +129,10 @@ async def pic(ctx, s, n=None):
             data = io.BytesIO(await resp.read())
             await ctx.send(file=discord.File(data, ""+s+'.png'))  
 
-
+#Gives the invite link for the bot
+@client.command(pass_context=True)
+async def invite(ctx):
+    await ctx.send('https://discord.com/oauth2/authorize?client_id=702344516933255258&scope=bot')
 
 keep_alive()
 
