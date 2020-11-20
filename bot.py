@@ -95,9 +95,11 @@ async def pic(ctx, *s):
     global counter
     
     searchurl = GOOGLE_IMAGE + 'q='
+    a = ''
     
     for i in s:
         searchurl = searchurl + i + '+'
+        a = a + i + '_'
 
     # request url, without usr_agent, the permission gets denied
     response = requests.get(searchurl, headers=usr_agent)
