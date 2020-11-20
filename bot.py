@@ -91,10 +91,13 @@ async def bread(ctx):
     
 #Search up any picture
 @client.command(pass_context=True)
-async def pic(ctx, s):
+async def pic(ctx, *s):
     global counter
-
-    searchurl = GOOGLE_IMAGE + 'q=' + s
+    
+    searchurl = GOOGLE_IMAGE + 'q='
+    
+    for i in s:
+        searchurl = searchurl + i + '+'
 
     # request url, without usr_agent, the permission gets denied
     response = requests.get(searchurl, headers=usr_agent)
