@@ -132,7 +132,7 @@ async def pic(ctx, *s):
             if resp.status != 200:
                 return await ctx.send('Could not download file...')
             data = io.BytesIO(await resp.read())
-            await ctx.send(file=discord.File(data, ""+s+'.png'))  
+            await ctx.send(file=discord.File(data, ""+a+'.png'))  
 
 #Gives the invite link for the bot
 @client.command(pass_context=True)
