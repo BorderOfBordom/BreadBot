@@ -38,6 +38,14 @@ async def on_member_join(ctx, member):
         to_send = 'Welcome {0.mention} to {1.name}!'.format(member, guild)
         await guild.system_channel.send(to_send)
 
+@client.event
+async def on_message(ctx):
+    if ctx.author == client.user:
+        return
+    
+    if ctx.content.startswith('shrey is good at riven'):
+        await ctx.send('Warning! Shrey gets carried on riven by typhoon!')
+
 #REEEEEE
 @client.command(pass_context=True)
 async def R(ctx):
@@ -138,6 +146,8 @@ async def pic(ctx, *s):
 @client.command(pass_context=True)
 async def invite(ctx):
     await ctx.send('https://discord.com/oauth2/authorize?client_id=702344516933255258&scope=bot')
+
+
 
 keep_alive()
 
