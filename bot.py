@@ -45,6 +45,8 @@ async def on_message(ctx):
     
     if ctx.content.startswith('shrey is good at riven'):
         await ctx.channel.send('Warning! Shrey gets carried on riven by typhoon!')
+    
+    await client.process_commands(ctx)
 
 #REEEEEE
 @client.command(pass_context=True)
