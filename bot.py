@@ -63,7 +63,6 @@ async def ranNum(ctx):
 @client.command(pass_context=True)
 async def bread(ctx):
     global counter
-
     searchurl = GOOGLE_IMAGE + 'q=bread'
 
     # request url, without usr_agent, the permission gets denied
@@ -102,8 +101,6 @@ async def bread(ctx):
 #Search up any picture
 @client.command(pass_context=True)
 async def pic(ctx, *s):
-    global counter
-    
     searchurl = GOOGLE_IMAGE + 'q='
     a = ''
     
@@ -131,11 +128,8 @@ async def pic(ctx, *s):
 
         except KeyError:
             continue
-
-    counter += 1
-    if(counter >= 100): counter = 0
     
-    link = links[counter]
+    link = links[0]
 
     async with aiohttp.ClientSession() as session:
         async with session.get(link) as resp:
