@@ -26,6 +26,7 @@ counter = 0
 SAVE_FOLDER = 'images'
 
 client = commands.Bot(command_prefix = '%')
+client.remove_command(help)
 
 @client.event
 async def on_ready():
@@ -52,12 +53,6 @@ async def on_message(ctx):
 @client.command(pass_context=True)
 async def R(ctx):
     await ctx.send('EEE')
-
-#Gives a random number between 1 and 100
-@client.command(pass_context=True)
-async def ranNum(ctx):
-    a = (int) ((random.random()*100)+1)
-    await ctx.send(a)
 
 #Gives a pic of bread
 @client.command(pass_context=True)
@@ -143,6 +138,21 @@ async def pic(ctx, *s):
 async def invite(ctx):
     await ctx.send('https://discord.com/oauth2/authorize?client_id=702344516933255258&scope=bot')
 
+@client.command(pass_context=True)
+async def help(ctx):
+    author = ctx.message.author
+
+    embed = discord.Embed(
+        colour = discord.Colour.orange
+    )
+
+    embed.set_author(name='Help')
+    embed.add_field(name='%bread', value='Returns a bread photo', inline=False)
+    embed.add_field(name='%invite', value='Gives the invite link for the bot', inline=False)
+    embed.add_field(name='%pic', value='Returns one photo from your search results', inline=False)
+    embed.add_field(name="%R", value='REEEEEEEE', inline=False)
+
+    await client.send_message(author, embed=embed)
 
 
 keep_alive()
