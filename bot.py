@@ -26,7 +26,7 @@ counter = 0
 SAVE_FOLDER = 'images'
 
 client = commands.Bot(command_prefix = '%')
-client.remove_command(help)
+client.remove_command('help')
 
 @client.event
 async def on_ready():
@@ -152,7 +152,7 @@ async def help(ctx):
     embed.add_field(name='%pic', value='Returns one photo from your search results', inline=False)
     embed.add_field(name="%R", value='REEEEEEEE', inline=False)
 
-    await client.send_message(author, embed=embed)
+    await author.send(embed=embed)
 
 
 keep_alive()
